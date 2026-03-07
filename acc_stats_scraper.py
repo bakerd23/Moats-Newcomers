@@ -462,7 +462,7 @@ def scrape_team_roster(team_url):
         r = requests.get(team_url, headers=_ua_headers(), timeout=30)
         r.raise_for_status()
 
-        tables = pd.read_html(r.content)
+        tables = pd.read_html(StringIO(r.text))
         roster_df = tables[0]
 
         team_name = team_url.split("/schools/")[1].split("/men/")[0].replace("-", " ").title()
@@ -530,7 +530,7 @@ def scrape_player_career(player_url, player_name):
         soup = BeautifulSoup(r.content, "html.parser")
 
         try:
-            tables = pd.read_html(r.content)
+            tables = pd.read_html(StringIO(r.text))
         except ValueError as e:
             if "No tables found" in str(e):
                 print(f"    No stats found for {player_name}")
